@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches: ["main"]
-  workflow_dispatch:  # Cho phép nhấn nút chạy thủ công
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,13 +22,15 @@ jobs:
           distribution: "temurin"
           cache: gradle
 
-      - name: Cấp quyền thực thi
-        run: chmod +x gradlew
+      - name: Tải Gradle Wrapper
+        run: |
+          curl -fsSL https://github.com/gradle/gradle/raw/v8.2.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+          chmod +x gradlew
 
       - name: Tạo APK Debug
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon
 
-      - name: Tải APK lên để tải về
+      - name: Tải APK về
         uses: actions/upload-artifact@v4
         with:
           name: StickerCuaToi-APK
